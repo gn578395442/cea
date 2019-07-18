@@ -118,7 +118,7 @@ public void actionPerformed(ActionEvent e) {
 		    						}
 		    	            } //~ if-else 判断当前字符的类型  
 		    	        } //~ for(i++)  
-		    		  sb.append(str_value.substring(index, chars.length));
+		    		  sb.append(str_value.substring(index, chars.length));//出错补全
 		    			label2.setText("<HTML>"+sb.toString()+"</HTML>");
 		        }
 		       
