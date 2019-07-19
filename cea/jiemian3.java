@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.Vector;
 import java.util.Random;
 
+@SuppressWarnings("serial")
 public  class jiemian3 extends JFrame implements ActionListener, ItemListener
 {
 	static jiemian3 s;
@@ -26,18 +27,21 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
 	JScrollPane scrollPane = new JScrollPane();
 	JTable table;
 	
-  	int max=82;
-    int min=1;
+	 //数据库连接URL
+    //private static final String JDBC_URL = "jdbc:h2:E:/Test/h2/bin/test";
+	 String JDBC_URL = "jdbc:h2:~/test";
+    //连接数据库时使用的用户名
+     String USER = "sa";
+    //连接数据库时使用的密码
+     String PASSWORD = "";
+    //连接H2数据库时使用的驱动类，org.h2.Driver这个类是由H2数据库自己提供的，在H2数据库的jar包中可以找到
+     String DRIVER_CLASS="org.h2.Driver";
+   	int max=82,min=1;
     Connection conn;
     Statement stmt;
     ResultSet rs;
-    String ti1;
-    String name1;
-	int a1;
-	int b1;
-	int c1;
-	int d1;
-	int e1;
+    String ti1,name1;
+    int a1,b1,c1,d1,e1;
 
 public jiemian3()
 {
@@ -75,128 +79,120 @@ public jiemian3()
 	bt2.addActionListener(this);	
 	jpl.add(bt2);
 }	
-	
+
+public  void chuti() {
+		Vector columnVector = new Vector();
+		Vector dataVector = new Vector();
+		try{// 加载H2数据库驱动
+	        Class.forName(DRIVER_CLASS);
+	    }
+	    catch (ClassNotFoundException ce){
+		    JOptionPane.showMessageDialog(s,ce.getMessage());
+	    }
+		
+		try{// 根据连接URL，用户名，密码获取数据库连接
+		    conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+		    stmt = conn.createStatement();
+		  Random random = new Random();
+		  int t = random.nextInt(max-min+1) + min;
+		  //查询
+		    rs = stmt.executeQuery("SELECT * FROM cea_ku where id = '"+t+"' ");
+		    
+		     if (rs.next()) {
+					String id1 = rs.getString("id");
+		 		ti1 = rs.getString("ti");
+		 		name1 = rs.getString("name");
+					a1 = rs.getInt("a");
+					b1 = rs.getInt("b");
+					c1 = rs.getInt("c");
+					d1 = rs.getInt("d");
+					e1 = rs.getInt("e");
+		         System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getInt("a")
+		         + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e"));
+		         StringBuffer sb = new StringBuffer();
+		 		int index = 0;
+		 		char[] chars = ti1.toCharArray();// 从前往后
+		 		
+		 		  for (int i = 1; i < chars.length; i++) {  
+		 	          
+		 			  if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
+		 	                //if(前一个字符是 右括号 或者 前一个字符是字母)  
+		 	                if(chars[i-1]==')'   
+		 	                        || (chars[i-1]>='A' && chars[i-1]<='Z')  
+		 	                        || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
+		 	                    	sb.append(ti1.substring(index,i));  
+		 	                            	sb.append("<sub>"+chars[i]+"</sub>");  
+		 	                            	index = i+1; 
+		 						}
+		 	            } //~ if-else 判断当前字符的类型
+		 	        } //~ for(i++)  
+		 		  sb.append(ti1.substring(index, chars.length));//出错补全
+		 			label2.setText("<HTML>"+sb.toString()+"</HTML>");
+		     }
+		    
+				rs.close();
+				conn.close();  //关闭连接
+		}catch(Exception exp){
+			exp.printStackTrace();  //输出出错信息
+		}
+}
+
+public void panduan() {
+	if(rs == null){//检查rs是否为空
+		JOptionPane.showMessageDialog(s,"你还没有出题呦");
+		
+      }
+	char[] chars = name1.toCharArray();// 从前往后
+	StringBuffer sb = new StringBuffer();
+	int index = 0;
+	  for (int i = 1; i < chars.length; i++) {  
+	      if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
+	            //if(前一个字符是 右括号 或者 前一个字符是字母)  
+	            if(chars[i-1]==')'   
+	                    || (chars[i-1]>='A' && chars[i-1]<='Z')  
+	                    || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
+	                	sb.append(name1.substring(index,i));  
+	                        	sb.append("<sub>"+chars[i]+"</sub>");  
+	                        	index = i+1; 
+					}
+	        } //~ if-else 判断当前字符的类型
+	    } //~ for(i++)  
+	  sb.append(name1.substring(index, chars.length));//出错补全
+		label2.setText("<HTML>"+sb.toString()+"</HTML>");
+		 int a2 =Integer.parseInt(tf1.getText());
+		 int b2 =Integer.parseInt(tf2.getText());
+		 int c2 =Integer.parseInt(tf3.getText());
+		 int d2 =Integer.parseInt(tf4.getText());
+		 int e2 =Integer.parseInt(tf5.getText());
+		if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
+			ta.setText("恭喜你答对了");
+		 }else {ta.setText("啊哦，答错了哦");}
+}
 @Override
 public void actionPerformed(ActionEvent e0) {
 		// TODO Auto-generated method stub
-		
-			 //数据库连接URL
-		    //private static final String JDBC_URL = "jdbc:h2:E:/Test/h2/bin/test";
-			 String JDBC_URL = "jdbc:h2:~/test";
-		    //连接数据库时使用的用户名
-		     String USER = "sa";
-		    //连接数据库时使用的密码
-		     String PASSWORD = "";
-		    //连接H2数据库时使用的驱动类，org.h2.Driver这个类是由H2数据库自己提供的，在H2数据库的jar包中可以找到
-		     String DRIVER_CLASS="org.h2.Driver";
-		     
-				Vector columnVector = new Vector();
-				Vector dataVector = new Vector();
-			try
-		    {
-				// 加载H2数据库驱动
-		        Class.forName(DRIVER_CLASS);
-		    }
-		    catch (ClassNotFoundException ce)
-		    {
-			    JOptionPane.showMessageDialog(s,ce.getMessage());
-		    }
 			//bt1:出题
 			if(e0.getSource()==bt1){
-			try{
-				// 根据连接URL，用户名，密码获取数据库连接
-		       conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
-		       stmt = conn.createStatement();
-		     Random random = new Random();
-		     int t = random.nextInt(max-min+1) + min;
-		     //查询
-		       rs = stmt.executeQuery("SELECT * FROM cea_ku where id = '"+t+"' ");
-		       
-		        if (rs.next()) {
-	    			String id1 = rs.getString("id");
-		    		ti1 = rs.getString("ti");
-		    		name1 = rs.getString("name");
-	    			a1 = rs.getInt("a");
-	    			b1 = rs.getInt("b");
-	    			c1 = rs.getInt("c");
-	    			d1 = rs.getInt("d");
-	    			e1 = rs.getInt("e");
-		            System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getInt("a")
-		            + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e"));
-		            StringBuffer sb = new StringBuffer();
-		    		int index = 0;
-		    		char[] chars = ti1.toCharArray();// 从前往后
-		    		
-		    		  for (int i = 1; i < chars.length; i++) {  
-		    	          
-		    			  if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
-		    	                //if(前一个字符是 右括号 或者 前一个字符是字母)  
-		    	                if(chars[i-1]==')'   
-		    	                        || (chars[i-1]>='A' && chars[i-1]<='Z')  
-		    	                        || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
-		    	                    	sb.append(ti1.substring(index,i));  
-		    	                            	sb.append("<sub>"+chars[i]+"</sub>");  
-		    	                            	index = i+1; 
-		    						}
-		    	            } //~ if-else 判断当前字符的类型
-		    	        } //~ for(i++)  
-		    		  sb.append(ti1.substring(index, chars.length));//出错补全
-		    			label2.setText("<HTML>"+sb.toString()+"</HTML>");
-		        }
-		       
-				rs.close();
-				conn.close();  //关闭连接
-			
-			}catch(Exception exp){
-				exp.printStackTrace();  //输出出错信息
-			}
+			chuti();
 		}
-		else
-		{
-			label2.setText("");
-		}	
+			
 		//bt2：对答案
 		if(e0.getSource()==bt2){
-			StringBuffer sb = new StringBuffer();
-			int index = 0;
-			char[] chars = name1.toCharArray();// 从前往后
-			
-			  for (int i = 1; i < chars.length; i++) {  
-			      if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
-			            //if(前一个字符是 右括号 或者 前一个字符是字母)  
-			            if(chars[i-1]==')'   
-			                    || (chars[i-1]>='A' && chars[i-1]<='Z')  
-			                    || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
-			                	sb.append(name1.substring(index,i));  
-			                        	sb.append("<sub>"+chars[i]+"</sub>");  
-			                        	index = i+1; 
-							}
-			        } //~ if-else 判断当前字符的类型
-			    } //~ for(i++)  
-			  sb.append(name1.substring(index, chars.length));//出错补全
-				label2.setText("<HTML>"+sb.toString()+"</HTML>");
-				 int a2 =Integer.parseInt(tf1.getText());
-				 int b2 =Integer.parseInt(tf2.getText());
-				 int c2 =Integer.parseInt(tf3.getText());
-				 int d2 =Integer.parseInt(tf4.getText());
-				 int e2 =Integer.parseInt(tf5.getText());
-				if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
-					ta.setText("恭喜你答对了");
-				 }else {ta.setText("啊哦，答错了哦");}
-				System.out.println(a1+b1+c1+d1+e1+a2+b2+c2+d2+e2);
+			panduan();
 		}
 }
 		
 
-
-@Override
-public void itemStateChanged(ItemEvent arg1) {
-
-}
 
 @SuppressWarnings("unused")
 public static void main(String[] args)
 {
 	jiemian3 s = new jiemian3();
+}
+
+@Override
+public void itemStateChanged(ItemEvent e) {
+	// TODO 自动生成的方法存根
+	
 }
 }
