@@ -25,11 +25,19 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
 	JTextArea ta = new JTextArea(5,20);
 	JScrollPane scrollPane = new JScrollPane();
 	JTable table;
+	
   	int max=82;
     int min=1;
     Connection conn;
     Statement stmt;
     ResultSet rs;
+    String ti1;
+    String name1;
+	String a1;
+	String b1;
+	String c1;
+	String d1;
+	String e1;
 
 public jiemian3()
 {
@@ -105,12 +113,19 @@ public void actionPerformed(ActionEvent e0) {
 		       rs = stmt.executeQuery("SELECT * FROM cea_ku where id = '"+t+"' ");
 		       
 		        if (rs.next()) {
+	    			String id1 = rs.getString("id");
+		    		ti1 = rs.getString("ti");
+		    		name1 = rs.getString("name");
+	    			a1 = rs.getString("a");
+	    			b1 = rs.getString("b");
+	    			c1 = rs.getString("c");
+	    			d1 = rs.getString("d");
+	    			e1 = rs.getString("e");
 		            System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getString("a")
 		            + "," + rs.getString("b")+ "," + rs.getString("c")+ "," + rs.getString("d")+ "," + rs.getString("e"));
 		            StringBuffer sb = new StringBuffer();
 		    		int index = 0;
-		    		String str_value = rs.getString("ti");
-		    		char[] chars = str_value.toCharArray();// 从前往后
+		    		char[] chars = ti1.toCharArray();// 从前往后
 		    		
 		    		  for (int i = 1; i < chars.length; i++) {  
 		    	          
@@ -119,28 +134,18 @@ public void actionPerformed(ActionEvent e0) {
 		    	                if(chars[i-1]==')'   
 		    	                        || (chars[i-1]>='A' && chars[i-1]<='Z')  
 		    	                        || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
-		    	                    	sb.append(str_value.substring(index,i));  
+		    	                    	sb.append(ti1.substring(index,i));  
 		    	                            	sb.append("<sub>"+chars[i]+"</sub>");  
 		    	                            	index = i+1; 
 		    						}
-		    	            } //~ if-else 判断当前字符的类型 
-		    			  /*if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
-		    	                //if(前一个字符是 右括号 或者 前一个字符是字母)  
-		    	                if(chars[i-2]==')'   
-		    	                        || (chars[i-1]>='A' && chars[i-1]<='Z')  
-		    	                        || (chars[i-1]>='a' && chars[i-1]<='z')||(chars[i-1]>='0' && chars[i-1]<='9')  ){  
-		    	                    	sb.append(str_value.substring(index,i));  
-		    	                            	sb.append("<sub>"+chars[i]+"</sub>");  
-		    	                            	index = i+1; 
-		    						}
-		    	            }*/
+		    	            } //~ if-else 判断当前字符的类型
 		    	        } //~ for(i++)  
-		    		  sb.append(str_value.substring(index, chars.length));//出错补全
+		    		  sb.append(ti1.substring(index, chars.length));//出错补全
 		    			label2.setText("<HTML>"+sb.toString()+"</HTML>");
 		        }
 		       
-				//rs.close();
-				//conn.close();  //关闭连接
+				rs.close();
+				conn.close();  //关闭连接
 			
 			}catch(Exception exp){
 				exp.printStackTrace();  //输出出错信息
@@ -152,50 +157,33 @@ public void actionPerformed(ActionEvent e0) {
 		}	
 		//bt2：对答案
 		if(e0.getSource()==bt2){
-			try {
-				System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getString("a")
-	            + "," + rs.getString("b")+ "," + rs.getString("c")+ "," + rs.getString("d")+ "," + rs.getString("e"));
-	            StringBuffer sb = new StringBuffer();
-	    		int index = 0;
-	    		String str_value = rs.getString("name");
-	    		char[] chars = str_value.toCharArray();// 从前往后
-	    		
-	    		  for (int i = 1; i < chars.length; i++) {  
-	    	          if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
-	    	                //if(前一个字符是 右括号 或者 前一个字符是字母)  
-	    	                if(chars[i-1]==')'   
-	    	                        || (chars[i-1]>='A' && chars[i-1]<='Z')  
-	    	                        || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
-	    	                    	sb.append(str_value.substring(index,i));  
-	    	                            	sb.append("<sub>"+chars[i]+"</sub>");  
-	    	                            	index = i+1; 
-	    						}
-	    	            } //~ if-else 判断当前字符的类型
-	    	        } //~ for(i++)  
-	    		  sb.append(str_value.substring(index, chars.length));//出错补全
-	    			label2.setText("<HTML>"+sb.toString()+"</HTML>");
-	    			
-	    			String a = rs.getString("a");
-	    			String b = rs.getString("b");
-	    			String c = rs.getString("c");
-	    			String d = rs.getString("d");
-	    			String e = rs.getString("e");
-	    			 String a1 =tf1.getText();
-	    			 String b1 =tf2.getText();
-	    			 String c1 =tf3.getText();
-	    			 String d1 =tf4.getText();
-	    			 String e1 =tf5.getText();
-					if(a1 ==a && b1 ==b  && c1 ==c && d1 ==d  && e1 ==e  ){ 
-						ta.setText("恭喜你答对了");
-	    			 }else {ta.setText("啊哦，答错了哦");}
-					System.out.println(a+b+c+d+e+a1+b1+c1+d1+e1);
-					rs.close();
-					conn.close();  //关闭连接
-	        }
-			 catch (SQLException e1) {
-				// TODO 自动生成的 catch 块
-				e1.printStackTrace();
-			}
+			StringBuffer sb = new StringBuffer();
+			int index = 0;
+			char[] chars = name1.toCharArray();// 从前往后
+			
+			  for (int i = 1; i < chars.length; i++) {  
+			      if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
+			            //if(前一个字符是 右括号 或者 前一个字符是字母)  
+			            if(chars[i-1]==')'   
+			                    || (chars[i-1]>='A' && chars[i-1]<='Z')  
+			                    || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
+			                	sb.append(name1.substring(index,i));  
+			                        	sb.append("<sub>"+chars[i]+"</sub>");  
+			                        	index = i+1; 
+							}
+			        } //~ if-else 判断当前字符的类型
+			    } //~ for(i++)  
+			  sb.append(name1.substring(index, chars.length));//出错补全
+				label2.setText("<HTML>"+sb.toString()+"</HTML>");
+				 String a2 =tf1.getText();
+				 String b2 =tf2.getText();
+				 String c2 =tf3.getText();
+				 String d2 =tf4.getText();
+				 String e2 =tf5.getText();
+				if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
+					ta.setText("恭喜你答对了");
+				 }else {ta.setText("啊哦，答错了哦");}
+				System.out.println(a1+b1+c1+d1+e1+a2+b2+c2+d2+e2);
 		}
 }
 		
