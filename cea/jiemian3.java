@@ -33,11 +33,11 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
     ResultSet rs;
     String ti1;
     String name1;
-	String a1;
-	String b1;
-	String c1;
-	String d1;
-	String e1;
+	int a1;
+	int b1;
+	int c1;
+	int d1;
+	int e1;
 
 public jiemian3()
 {
@@ -116,13 +116,13 @@ public void actionPerformed(ActionEvent e0) {
 	    			String id1 = rs.getString("id");
 		    		ti1 = rs.getString("ti");
 		    		name1 = rs.getString("name");
-	    			a1 = rs.getString("a");
-	    			b1 = rs.getString("b");
-	    			c1 = rs.getString("c");
-	    			d1 = rs.getString("d");
-	    			e1 = rs.getString("e");
-		            System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getString("a")
-		            + "," + rs.getString("b")+ "," + rs.getString("c")+ "," + rs.getString("d")+ "," + rs.getString("e"));
+	    			a1 = rs.getInt("a");
+	    			b1 = rs.getInt("b");
+	    			c1 = rs.getInt("c");
+	    			d1 = rs.getInt("d");
+	    			e1 = rs.getInt("e");
+		            System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getInt("a")
+		            + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e"));
 		            StringBuffer sb = new StringBuffer();
 		    		int index = 0;
 		    		char[] chars = ti1.toCharArray();// 从前往后
@@ -175,11 +175,11 @@ public void actionPerformed(ActionEvent e0) {
 			    } //~ for(i++)  
 			  sb.append(name1.substring(index, chars.length));//出错补全
 				label2.setText("<HTML>"+sb.toString()+"</HTML>");
-				 String a2 =tf1.getText();
-				 String b2 =tf2.getText();
-				 String c2 =tf3.getText();
-				 String d2 =tf4.getText();
-				 String e2 =tf5.getText();
+				 int a2 =Integer.parseInt(tf1.getText());
+				 int b2 =Integer.parseInt(tf2.getText());
+				 int c2 =Integer.parseInt(tf3.getText());
+				 int d2 =Integer.parseInt(tf4.getText());
+				 int e2 =Integer.parseInt(tf5.getText());
 				if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
 					ta.setText("恭喜你答对了");
 				 }else {ta.setText("啊哦，答错了哦");}
