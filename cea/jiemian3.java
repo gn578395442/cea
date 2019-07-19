@@ -1,5 +1,6 @@
 package cea;
 
+import java.applet.Applet;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -40,6 +41,7 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
     Connection conn;
     Statement stmt;
     ResultSet rs;
+    ResultSet rs1;
     String ti1,name1;
     int a1,b1,c1,d1,e1;
 
@@ -61,14 +63,19 @@ public jiemian3()
 	jpl.add(label3);
 	tf1.setBounds(70,180,30,20);
 	jpl.add(tf1);
+	tf1.addActionListener(this);
 	tf2.setBounds(120,180,30,20);
 	jpl.add(tf2);
+	tf2.addActionListener(this);
 	tf3.setBounds(170,180,30,20);
 	jpl.add(tf3);
+	tf3.addActionListener(this);
 	tf4.setBounds(220,180,30,20);
 	jpl.add(tf4);
+	tf4.addActionListener(this);
 	tf5.setBounds(270,180,30,20);
 	jpl.add(tf5);
+	tf5.addActionListener(this);
 	ta.setBounds(70,260, 250, 200);
 	ta.setBackground(Color.GRAY );
 	jpl.add(ta);
@@ -78,6 +85,7 @@ public jiemian3()
 	bt2.setBounds(240,220,90,20);
 	bt2.addActionListener(this);	
 	jpl.add(bt2);
+	
 }	
 
 public  void chuti() {
@@ -140,33 +148,35 @@ public  void chuti() {
 public void panduan() {
 	if(rs == null){//检查rs是否为空
 		JOptionPane.showMessageDialog(s,"你还没有出题呦");
-		
-      }
-	char[] chars = name1.toCharArray();// 从前往后
-	StringBuffer sb = new StringBuffer();
-	int index = 0;
-	  for (int i = 1; i < chars.length; i++) {  
-	      if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
-	            //if(前一个字符是 右括号 或者 前一个字符是字母)  
-	            if(chars[i-1]==')'   
-	                    || (chars[i-1]>='A' && chars[i-1]<='Z')  
-	                    || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
-	                	sb.append(name1.substring(index,i));  
-	                        	sb.append("<sub>"+chars[i]+"</sub>");  
-	                        	index = i+1; 
-					}
-	        } //~ if-else 判断当前字符的类型
-	    } //~ for(i++)  
-	  sb.append(name1.substring(index, chars.length));//出错补全
-		label2.setText("<HTML>"+sb.toString()+"</HTML>");
-		 int a2 =Integer.parseInt(tf1.getText());
-		 int b2 =Integer.parseInt(tf2.getText());
-		 int c2 =Integer.parseInt(tf3.getText());
-		 int d2 =Integer.parseInt(tf4.getText());
-		 int e2 =Integer.parseInt(tf5.getText());
-		if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
-			ta.setText("恭喜你答对了");
-		 }else {ta.setText("啊哦，答错了哦");}
+      }else {
+    	  if (rs == rs1){
+				JOptionPane.showMessageDialog(s,"这一题你刚刚做过了呦！");
+				}else {
+					char[] chars = name1.toCharArray();// 从前往后
+					StringBuffer sb = new StringBuffer();
+					int index = 0;
+					  for (int i = 1; i < chars.length; i++) {  
+					      if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
+					            //if(前一个字符是 右括号 或者 前一个字符是字母)  
+					            if(chars[i-1]==')'   
+					                    || (chars[i-1]>='A' && chars[i-1]<='Z')  
+					                    || (chars[i-1]>='a' && chars[i-1]<='z')  ){  
+					                	sb.append(name1.substring(index,i));  
+					                        	sb.append("<sub>"+chars[i]+"</sub>");  
+					                        	index = i+1; 
+									}
+					        } //~ if-else 判断当前字符的类型
+					    } //~ for(i++)  
+					  sb.append(name1.substring(index, chars.length));//出错补全
+						label2.setText("<HTML>"+sb.toString()+"</HTML>");
+						 int a2 =Integer.parseInt(tf1.getText());
+						 int b2 =Integer.parseInt(tf2.getText());
+						 int c2 =Integer.parseInt(tf3.getText());
+						 int d2 =Integer.parseInt(tf4.getText());
+						 int e2 =Integer.parseInt(tf5.getText());
+						if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
+							ta.setText("恭喜你答对了");
+						 }else {ta.setText("啊哦，答错了哦");}}rs1=rs;}
 }
 @Override
 public void actionPerformed(ActionEvent e0) {
@@ -174,12 +184,25 @@ public void actionPerformed(ActionEvent e0) {
 			//bt1:出题
 			if(e0.getSource()==bt1){
 			chuti();
+			tf1.requestFocus();
 		}
 			
 		//bt2：对答案
 		if(e0.getSource()==bt2){
 			panduan();
+			bt1.requestFocus();
 		}
+		//焦点切换
+		if (e0.getSource() == tf1) {
+			tf2.requestFocus();}
+			else if (e0.getSource() == tf2) {
+			tf3.requestFocus();}
+			else if (e0.getSource() == tf3) {
+			tf4.requestFocus();}
+			else if (e0.getSource() == tf4) {
+			tf5.requestFocus();}
+			else if (e0.getSource() == tf5) {
+			bt2.requestFocus();}
 }
 		
 
