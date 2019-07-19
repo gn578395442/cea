@@ -12,7 +12,7 @@ import java.util.Random;
 public  class jiemian3 extends JFrame implements ActionListener, ItemListener
 {
 	static jiemian3 s;
-	/*添加学生信息控件*/
+	/*添加控件*/
 	JPanel jpl = new JPanel();
 	JLabel label1 = new JLabel("请将下面给出的化学方程式配平",JLabel.CENTER);
 	JLabel label2 = new JLabel("",JLabel.CENTER);
@@ -35,8 +35,9 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
      String USER = "sa";
     //连接数据库时使用的密码
      String PASSWORD = "";
-    //连接H2数据库时使用的驱动类，org.h2.Driver这个类是由H2数据库自己提供的，在H2数据库的jar包中可以找到
+    //连接H2数据库时使用的驱动类。org.h2.Driver这个类是由H2数据库自己提供的，在H2数据库的jar包中可以找到
      String DRIVER_CLASS="org.h2.Driver";
+     //全局定义
    	int max=82,min=1;
     Connection conn;
     Statement stmt;
@@ -49,7 +50,7 @@ public jiemian3()
 {
 	super("化学方程式大冒险");
 	this.setResizable(false);
-	this.setSize(500,800);
+	this.setSize(400,800);
 	this.setVisible(true);
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	this.add(jpl);
@@ -85,7 +86,19 @@ public jiemian3()
 	bt2.setBounds(240,220,90,20);
 	bt2.addActionListener(this);	
 	jpl.add(bt2);
-	
+	//回车触发按钮
+	bt1.registerKeyboardAction(bt1.getActionForKeyStroke(
+			 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false)),
+			 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),JComponent.WHEN_FOCUSED);
+	bt1.registerKeyboardAction(bt1.getActionForKeyStroke(
+			 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true)),
+			 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),JComponent.WHEN_FOCUSED);
+	bt2.registerKeyboardAction(bt2.getActionForKeyStroke(
+			 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false)),
+			 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),JComponent.WHEN_FOCUSED);
+	bt2.registerKeyboardAction(bt2.getActionForKeyStroke(
+			 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true)),
+			 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),JComponent.WHEN_FOCUSED);
 }	
 
 public  void chuti() {
@@ -105,7 +118,7 @@ public  void chuti() {
 		  int t = random.nextInt(max-min+1) + min;
 		  //查询
 		    rs = stmt.executeQuery("SELECT * FROM cea_ku where id = '"+t+"' ");
-		    
+		    //rs信息转出
 		     if (rs.next()) {
 					String id1 = rs.getString("id");
 		 		ti1 = rs.getString("ti");
@@ -117,12 +130,12 @@ public  void chuti() {
 					e1 = rs.getInt("e");
 		         System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getInt("a")
 		         + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e"));
+		         //化学方程式的下标转化
 		         StringBuffer sb = new StringBuffer();
 		 		int index = 0;
 		 		char[] chars = ti1.toCharArray();// 从前往后
 		 		
 		 		  for (int i = 1; i < chars.length; i++) {  
-		 	          
 		 			  if(chars[i]>='0' && chars[i]<='9'){  //if当前字符是数字
 		 	                //if(前一个字符是 右括号 或者 前一个字符是字母)  
 		 	                if(chars[i-1]==')'   
@@ -134,7 +147,7 @@ public  void chuti() {
 		 						}
 		 	            } //~ if-else 判断当前字符的类型
 		 	        } //~ for(i++)  
-		 		  sb.append(ti1.substring(index, chars.length));//出错补全
+		 		  sb.append(ti1.substring(index, chars.length));//补全
 		 			label2.setText("<HTML>"+sb.toString()+"</HTML>");
 		     }
 		    
@@ -148,7 +161,7 @@ public  void chuti() {
 public void panduan() {
 	if(rs == null){//检查rs是否为空
 		JOptionPane.showMessageDialog(s,"你还没有出题呦");
-      }else {
+      }else {//防止一题连续提交
     	  if (rs == rs1){
 				JOptionPane.showMessageDialog(s,"这一题你刚刚做过了呦！");
 				}else {
@@ -167,8 +180,9 @@ public void panduan() {
 									}
 					        } //~ if-else 判断当前字符的类型
 					    } //~ for(i++)  
-					  sb.append(name1.substring(index, chars.length));//出错补全
+					  sb.append(name1.substring(index, chars.length));//补全
 						label2.setText("<HTML>"+sb.toString()+"</HTML>");
+						//判断对错
 						 int a2 =Integer.parseInt(tf1.getText());
 						 int b2 =Integer.parseInt(tf2.getText());
 						 int c2 =Integer.parseInt(tf3.getText());
@@ -185,6 +199,7 @@ public void actionPerformed(ActionEvent e0) {
 			if(e0.getSource()==bt1){
 			chuti();
 			tf1.requestFocus();
+			tf1.selectAll();
 		}
 			
 		//bt2：对答案
@@ -194,17 +209,20 @@ public void actionPerformed(ActionEvent e0) {
 		}
 		//焦点切换
 		if (e0.getSource() == tf1) {
-			tf2.requestFocus();}
+			tf2.requestFocus();
+			tf2.selectAll();}
 			else if (e0.getSource() == tf2) {
-			tf3.requestFocus();}
+			tf3.requestFocus();
+			tf3.selectAll();}
 			else if (e0.getSource() == tf3) {
-			tf4.requestFocus();}
+			tf4.requestFocus();
+			tf4.selectAll();}
 			else if (e0.getSource() == tf4) {
-			tf5.requestFocus();}
+			tf5.requestFocus();
+			tf5.selectAll();}
 			else if (e0.getSource() == tf5) {
 			bt2.requestFocus();}
 }
-		
 
 
 @SuppressWarnings("unused")
