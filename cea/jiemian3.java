@@ -44,7 +44,7 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
     ResultSet rs;
     ResultSet rs1;
     String ti1,name1;
-    int a1,b1,c1,d1,e1;
+    int a1,b1,c1,d1,e1,a2,b2,c2,d2,e2;
 
 public jiemian3()
 {
@@ -182,12 +182,19 @@ public void panduan() {
 					    } //~ for(i++)  
 					  sb.append(name1.substring(index, chars.length));//补全
 						label2.setText("<HTML>"+sb.toString()+"</HTML>");
-						//判断对错
-						 int a2 =Integer.parseInt(tf1.getText());
-						 int b2 =Integer.parseInt(tf2.getText());
-						 int c2 =Integer.parseInt(tf3.getText());
-						 int d2 =Integer.parseInt(tf4.getText());
-						 int e2 =Integer.parseInt(tf5.getText());
+						try{//判断对错
+							a2 =Integer.parseInt(tf1.getText());
+							b2 =Integer.parseInt(tf2.getText());
+							c2 =Integer.parseInt(tf3.getText());
+							d2 =Integer.parseInt(tf4.getText());
+							e2 =Integer.parseInt(tf5.getText());
+					    }
+					    catch (Exception ce1){
+						    JOptionPane.showMessageDialog(s,ce1.getMessage()+ "\n" +"必须输入数字才行哟！");
+							tf1.requestFocus();
+							tf1.selectAll();
+						    return; 
+					    }
 						if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
 							ta.setText("恭喜你答对了");
 						 }else {ta.setText("啊哦，答错了哦");}}rs1=rs;}
@@ -204,8 +211,8 @@ public void actionPerformed(ActionEvent e0) {
 			
 		//bt2：对答案
 		if(e0.getSource()==bt2){
-			panduan();
 			bt1.requestFocus();
+			panduan();
 		}
 		//焦点切换
 		if (e0.getSource() == tf1) {
