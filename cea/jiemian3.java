@@ -1,4 +1,4 @@
-package cea;
+github.comgithub.comgithub.comgithub.compackage cea;
 
 import java.applet.Applet;
 import java.awt.*;
@@ -79,6 +79,7 @@ public jiemian3()
 	tf5.addActionListener(this);
 	ta.setBounds(70,260, 250, 200);
 	ta.setBackground(Color.GRAY );
+	ta.setEditable(false);
 	jpl.add(ta);
 	bt1.setBounds(80,220,90,20);
 	bt1.addActionListener(this);
@@ -199,6 +200,10 @@ public void panduan() {
 							ta.setText("恭喜你答对了");
 						 }else {ta.setText("啊哦，答错了哦");}}rs1=rs;}
 }
+
+public void tips() {
+	//ssh实验
+}
 @Override
 public void actionPerformed(ActionEvent e0) {
 		// TODO Auto-generated method stub
@@ -243,4 +248,5 @@ public void itemStateChanged(ItemEvent e) {
 	// TODO 自动生成的方法存根
 	
 }
+
 }
