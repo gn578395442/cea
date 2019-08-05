@@ -1,12 +1,12 @@
-github.comgithub.comgithub.comgithub.compackage cea;
+package cea;
 
-import java.applet.Applet;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.Vector;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings("serial")
 public  class jiemian3 extends JFrame implements ActionListener, ItemListener
@@ -38,19 +38,16 @@ public  class jiemian3 extends JFrame implements ActionListener, ItemListener
     //连接H2数据库时使用的驱动类。org.h2.Driver这个类是由H2数据库自己提供的，在H2数据库的jar包中可以找到
      String DRIVER_CLASS="org.h2.Driver";
      //全局定义
-   	int max=82,min=1;
-    Connection conn;
-    Statement stmt;
-    ResultSet rs;
-    ResultSet rs1;
-    String ti1,name1;
-    int a1,b1,c1,d1,e1,a2,b2,c2,d2,e2;
+    Connection conn;Statement stmt;
+    ResultSet rs,rs1;
+    int max=82,min=1,a1,b1,c1,d1,e1,a2,b2,c2,d2,e2;
+    String ti1,name1,ta1="",ta2="",ta3="";
 
 public jiemian3()
 {
 	super("化学方程式大冒险");
 	this.setResizable(false);
-	this.setSize(400,800);
+	this.setSize(400,550);
 	this.setVisible(true);
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	this.add(jpl);
@@ -58,7 +55,7 @@ public jiemian3()
 	/*插入面板*/
 	label1.setBounds(80,20,220,20);
 	jpl.add(label1);
-	label2.setBounds(70,80,300,50);
+	label2.setBounds(70,80,250,50);
 	jpl.add(label2);
 	label3.setBounds(60,140,250,20);
 	jpl.add(label3);
@@ -80,6 +77,8 @@ public jiemian3()
 	ta.setBounds(70,260, 250, 200);
 	ta.setBackground(Color.GRAY );
 	ta.setEditable(false);
+	ta.setLineWrap(true);		//激活自动换行功能 
+	//ta.setWrapStyleWord(true);  // 激活断行不断字功能
 	jpl.add(ta);
 	bt1.setBounds(80,220,90,20);
 	bt1.addActionListener(this);
@@ -100,11 +99,10 @@ public jiemian3()
 	bt2.registerKeyboardAction(bt2.getActionForKeyStroke(
 			 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true)),
 			 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true),JComponent.WHEN_FOCUSED);
+	tips();
 }	
 
 public  void chuti() {
-		Vector columnVector = new Vector();
-		Vector dataVector = new Vector();
 		try{// 加载H2数据库驱动
 	        Class.forName(DRIVER_CLASS);
 	    }
@@ -121,16 +119,17 @@ public  void chuti() {
 		    rs = stmt.executeQuery("SELECT * FROM cea_ku where id = '"+t+"' ");
 		    //rs信息转出
 		     if (rs.next()) {
-					String id1 = rs.getString("id");
-		 		ti1 = rs.getString("ti");
-		 		name1 = rs.getString("name");
+		    		//String id1 = rs.getString("id");
+		 			ti1 = rs.getString("ti");
+		 			name1 = rs.getString("name");
 					a1 = rs.getInt("a");
 					b1 = rs.getInt("b");
 					c1 = rs.getInt("c");
 					d1 = rs.getInt("d");
 					e1 = rs.getInt("e");
+					ta2= rs.getString("miaoshu");
 		         System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("ti") + "," + rs.getInt("a")
-		         + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e"));
+		         + "," + rs.getInt("b")+ "," + rs.getInt("c")+ "," + rs.getInt("d")+ "," + rs.getInt("e")+ "," +rs.getString("miaoshu"));
 		         //化学方程式的下标转化
 		         StringBuffer sb = new StringBuffer();
 		 		int index = 0;
@@ -157,6 +156,7 @@ public  void chuti() {
 		}catch(Exception exp){
 			exp.printStackTrace();  //输出出错信息
 		}
+		ta.setText(ta1+ "\n" +"\n" +ta2+ "\n" +"\n" +ta3);
 }
 
 public void panduan() {
@@ -197,12 +197,11 @@ public void panduan() {
 						    return; 
 					    }
 						if(a1 ==a2 && b1 ==b2  && c1 ==c2 && d1 ==d2  && e1 ==e2  ){ 
-							ta.setText("恭喜你答对了");
-						 }else {ta.setText("啊哦，答错了哦");}}rs1=rs;}
-}
-
-public void tips() {
-	//ssh实验
+							ta1="恭喜你答对了";
+							ta.setText(ta1+ "\n" +"\n" +ta2+ "\n" +"\n" +ta3);
+						 }else {
+							 ta1="啊哦，答错了哦";
+							 ta.setText(ta1+ "\n" +"\n" +ta2+ "\n" +"\n" +ta3);}}rs1=rs;}
 }
 @Override
 public void actionPerformed(ActionEvent e0) {
@@ -235,7 +234,18 @@ public void actionPerformed(ActionEvent e0) {
 			else if (e0.getSource() == tf5) {
 			bt2.requestFocus();}
 }
-
+public void tips(){
+	TimerTask task = new TimerTask() {
+	@Override
+	public void run() {
+		ta3="不存在分配项的系数填0补位；\nTab可以向下切换焦点；\nShift+Tab可以向上切换焦点";//可以改成多条tips循环播放
+		ta.setText(ta1+ "\n" + "\n" +ta2+ "\n" + "\n" +ta3);
+	}};
+Timer timer = new Timer();
+long delay = 0;
+long intevalPeriod = 5 * 1000;
+timer.scheduleAtFixedRate(task, delay, intevalPeriod);
+}
 
 @SuppressWarnings("unused")
 public static void main(String[] args)
@@ -246,7 +256,5 @@ public static void main(String[] args)
 @Override
 public void itemStateChanged(ItemEvent e) {
 	// TODO 自动生成的方法存根
-	
 }
-
 }
